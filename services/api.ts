@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { IWeather } from '../types/interfaces/weather';
 
-const API_KEY = '5ea82879d34125448dacff5373bcc3aa';
+// const API_KEY = '5ea82879d34125448dacff5373bcc3aa';
 
 async function GetWeatherInfo(city: string) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+    // const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
     let w: IWeather;
     await Promise.all([])
     w = {
