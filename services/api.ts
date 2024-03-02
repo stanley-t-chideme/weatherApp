@@ -37,4 +37,4 @@ async function FindCity(query: string): Promise<ICity[]> {
     });
 }
 
-export { GetWeatherInfo, FindCity };
+export { GetWeatherInfo, FindCity};

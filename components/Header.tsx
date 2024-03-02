@@ -5,18 +5,18 @@ import { IconButton } from 'react-native-paper';
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
-        width: "100%",
-        justifyContent: "space-between"
-    }
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+    },
 });
 
 function Header() {
     return <View style={styles.container}>
         <IconButton
             icon="camera"
-            iconColor={"white"}
-            containerColor='black'
+            iconColor={'white'}
+            containerColor="black"
             selected={true}
             style={{
 
@@ -27,8 +27,8 @@ function Header() {
 
         <IconButton
             icon="dots-grid"
-            iconColor={"white"}
-            containerColor='black'
+            iconColor={'white'}
+            containerColor="black"
             size={20}
             onPress={() => console.log('Pressed')}
         />

@@ -12,7 +12,7 @@ import { KelvinToCelsius, KelvinToFahrenheit } from '../utilis/helpers';
 import IOIcon from 'react-native-vector-icons/Ionicons';
 import Fa6Icon from 'react-native-vector-icons/FontAwesome6';
 import { WeatherCard } from '../components/WeatherCard';
-import { DEGREE, SCREEN_HEIGHT } from '../utilis/constants';
+import { DEFAULT_CITY, DEGREE, SCREEN_HEIGHT } from '../utilis/constants';
 import { ETemperatureMetrics } from '../types/enums/temperature';
 import { Footer } from '../components/Footer';
 import { Toggle } from '../components/Toggle';
@@ -72,16 +72,10 @@ function HomeScreen(): React.JSX.Element {
   };
 
   React.useEffect(() => {
-    GetWeatherInfo('Germiston').then((text) => {
+    GetWeatherInfo(DEFAULT_CITY).then((text) => {
       setWeatherInfo(text);
     });
   }, []);
-
-  React.useEffect(() => {
-    if (weatherInfo !== undefined){
-      console.log(Object.keys(weatherInfo!));
-    }
-  }, [weatherInfo]);
 
   return <SafeAreaView >
     <View style={styles.container}>
