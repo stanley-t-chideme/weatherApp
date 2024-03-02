@@ -1,34 +1,28 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
   Modal,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import {Button, Searchbar} from 'react-native-paper';
-import axios from 'axios';
-import { API_KEY } from '../utilis/constants';
-
-interface City {
-  id: number;
-  name: string;
-  sys: {
-    country: string;
-  };
-}
+import { Text } from 'react-native-paper';
+import { Button, Searchbar } from 'react-native-paper';
+import { FindCity } from '../services/api';
+import { ICity } from '../types/interfaces/city';
+import IOIcon from 'react-native-vector-icons/Ionicons';
 
 interface SearchModalProps {
   visible: boolean;
   onClose: () => void;
+  selectCity: (val: string) => Promise<void>;
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({visible, onClose}) => {
+const SearchModal: React.FC<SearchModalProps> = ({ visible, onClose, selectCity }) => {
   const [query, setQuery] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<City[]>([]);
+  const [searchResults, setSearchResults] = useState<ICity[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [notFound, setNotFound] = useState<boolean>(false);
 
@@ -36,11 +30,9 @@ const SearchModal: React.FC<SearchModalProps> = ({visible, onClose}) => {
     setLoading(true);
     setNotFound(false);
     try {
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/find?q=${query}&type=like&appid=${API_KEY}`,
-      );
-      setSearchResults(response.data.list);
-      if (response.data.list.length === 0) {
+      const response = await FindCity(query);
+      setSearchResults(response);
+      if (response.length === 0) {
         setNotFound(true);
       }
     } catch (error) {
@@ -50,19 +42,26 @@ const SearchModal: React.FC<SearchModalProps> = ({visible, onClose}) => {
     }
   };
 
-  const renderItem = ({item}: {item: City}) => (
+  const renderItem = ({ item }: { item: ICity }) => (
     <TouchableOpacity
       style={styles.item}
       onPress={() => onSelectCity(item.name)}>
-      <Text>
-        {item.name}, {item.sys.country}
-      </Text>
+      <IOIcon name="location" size={20} color={'gray'} style={{ margin: 6, marginLeft: 0 }} />
+      <View>
+        <Text style={{ fontWeight: '900' }}>
+          {item.name}
+        </Text>
+        <Text>
+          {item.country}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 
-  const onSelectCity = (cityName: string) => {
-    console.log('Selected city:', cityName);
-    onClose();
+  const onSelectCity = async (cityName: string) => {
+    await selectCity(cityName).then(() => {
+      onClose();
+    });
   };
 
   return (
@@ -70,13 +69,21 @@ const SearchModal: React.FC<SearchModalProps> = ({visible, onClose}) => {
       <View style={styles.container}>
         <Searchbar
           placeholder="Search for a city"
-          onChangeText={setQuery}
+          onChangeText={(text: string) => {
+            setQuery(text);
+            if (text !== undefined) {
+              searchCities();
+            }
+          }}
           value={query}
-          onSubmitEditing={searchCities}
+          onClearIconPress={() => {
+            setQuery('');
+            setSearchResults([]);
+          }}
         />
         {loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="black" />
           </View>
         ) : notFound ? (
           <View style={styles.notFoundContainer}>
@@ -86,7 +93,7 @@ const SearchModal: React.FC<SearchModalProps> = ({visible, onClose}) => {
           <FlatList
             data={searchResults}
             renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item, i) => i.toString()}
             style={styles.list}
           />
         )}
@@ -106,6 +113,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    flexDirection: 'row',
   },
   list: {
     flex: 1,

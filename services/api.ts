@@ -1,60 +1,39 @@
 /* eslint-disable prettier/prettier */
+import axios from 'axios';
+import { ICity } from '../types/interfaces/city';
 import { IWeather } from '../types/interfaces/weather';
+import cities from 'cities.json';
 
 async function GetWeatherInfo(city: string) {
-    // const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
     let w: IWeather;
-    await Promise.all([])
-    w = {
-        coord: {
-            lon: 10.99,
-            lat: 44.34,
-        },
-        weather: [
-            {
-                id: 501,
-                main: 'Rain',
-                description: 'moderate rain',
-                icon: '10d',
-            },
-        ],
-        base: 'stations',
-        main: {
-            temp: 298.48,
-            feels_like: 298.74,
-            temp_min: 297.56,
-            temp_max: 300.05,
-            pressure: 1015,
-            humidity: 64,
-            sea_level: 1015,
-            grnd_level: 933,
-        },
-        visibility: 10000,
-        wind: {
-            speed: 0.62,
-            deg: 349,
-            gust: 1.18,
-        },
-        rain: {
-            '1h': 3.16,
-        },
-        clouds: {
-            all: 100,
-        },
-        dt: 1661870592,
-        sys: {
-            type: 2,
-            id: 2075663,
-            country: 'IT',
-            sunrise: 1661834187,
-            sunset: 1661882248,
-        },
-        timezone: 7200,
-        id: 3163858,
-        name: 'Zocca',
-        cod: 200,
-    };
+    w = await axios.get(url).then((res) => {
+        return { ...res.data };
+    });
+
     return w;
 }
 
-export { GetWeatherInfo };
+async function FindCity(query: string): Promise<ICity[]> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const results: ICity[] = [];
+
+            if (query === '' || query === undefined) {
+                resolve(results);
+            }
+
+            for (const item of Object.values(cities)) {
+                if (item.name.startsWith(query)) {
+                    results.push(item);
+                    if (results.length >= 5) {
+                        break;
+                    }
+                }
+            }
+            resolve(results);
+        }, 0);
+    });
+}
+
+export { GetWeatherInfo, FindCity };

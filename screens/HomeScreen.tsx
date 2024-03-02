@@ -72,17 +72,30 @@ function HomeScreen(): React.JSX.Element {
   };
 
   React.useEffect(() => {
-    GetWeatherInfo('Harare').then((val) => {
-      setWeatherInfo(val);
+    GetWeatherInfo('Germiston').then((text) => {
+      setWeatherInfo(text);
     });
   }, []);
 
   return <SafeAreaView >
     <View style={styles.container}>
-      {/* <Header />*/}
       <View style={styles.headerContainer}>
         <View style={{}}>
-          <TouchableHighlight onPress={() => setShowSearch(true)} style={{ backgroundColor: 'black', borderRadius: 20, padding: 2, elevation: 10, borderWidth: 1 }}>
+          <TouchableHighlight
+            onPress={
+              () =>
+                setShowSearch(true)
+            }
+            style={
+              {
+                backgroundColor: 'black',
+                borderRadius: 20,
+                padding: 2,
+                elevation: 10,
+                borderWidth: 1,
+              }
+            }
+          >
             <IOIcon name="location" size={30} color={'white'} />
           </TouchableHighlight>
         </View>
@@ -148,7 +161,15 @@ function HomeScreen(): React.JSX.Element {
     </View>
 
     <Footer />
-    <SearchModal visible={showSearch} onClose={() => { setShowSearch(false); }} />
+    <SearchModal
+      visible={showSearch}
+      onClose={() => { setShowSearch(false); }}
+      selectCity={async (val) => {
+        GetWeatherInfo(val).then((text) => {
+          setWeatherInfo(text);
+        });
+      }}
+    />
   </SafeAreaView>;
 }
 
