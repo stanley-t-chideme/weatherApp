@@ -77,6 +77,12 @@ function HomeScreen(): React.JSX.Element {
     });
   }, []);
 
+  React.useEffect(() => {
+    if (weatherInfo !== undefined){
+      console.log(Object.keys(weatherInfo!));
+    }
+  }, [weatherInfo]);
+
   return <SafeAreaView >
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -119,13 +125,18 @@ function HomeScreen(): React.JSX.Element {
       <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
         <Text variant="headlineSmall" style={{ marginVertical: 20, fontWeight: '600', letterSpacing: 2 }}>{`${new Date().toDateString()}`}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-          <Text variant="headlineMedium">{`${weatherInfo?.name}, ${weatherInfo?.sys.country}`}</Text>
+          {weatherInfo === undefined || weatherInfo === null ?
+            <Text variant="headlineMedium">{'-'}</Text>
+            : <Text variant="headlineMedium">{`${weatherInfo?.name}, ${weatherInfo?.sys.country}`}</Text>}
         </View>
         <Text style={{ textTransform: 'capitalize' }}>{weatherInfo?.weather[0].description}</Text>
         <Text variant="displayLarge" style={{ marginVertical: 10 }}>{generateTemperatureString()}</Text>
         <View style={{ alignItems: 'center' }}>
           <Image source={{ uri: `https://openweathermap.org/img/wn/${weatherInfo?.weather[0].icon}@2x.png` }} width={120} height={120} style={{ padding: 0 }} />
-          <Text variant="headlineLarge">{weatherInfo?.weather[0].main}</Text>
+          {weatherInfo === undefined || weatherInfo === null ?
+            <Text variant="headlineLarge">{'-'}</Text>
+            : <Text variant="headlineLarge">{weatherInfo?.weather[0].main}</Text>
+          }
         </View>
       </View>
 

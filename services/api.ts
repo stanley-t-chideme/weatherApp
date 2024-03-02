@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ICity } from '../types/interfaces/city';
 import { IWeather } from '../types/interfaces/weather';
 import cities from 'cities.json';
+import { API_KEY } from '../utilis/constants';
 
 async function GetWeatherInfo(city: string) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
@@ -15,7 +16,7 @@ async function GetWeatherInfo(city: string) {
 }
 
 async function FindCity(query: string): Promise<ICity[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             const results: ICity[] = [];
 

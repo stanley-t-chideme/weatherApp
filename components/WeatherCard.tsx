@@ -36,7 +36,7 @@ const WeatherCard: React.FC<ICardInfo> = ({ label,
             {icon}
             <Text
                 variant="titleSmall"
-                style={styles.value}>{`${value}${metric}`}</Text>
+                style={styles.value}>{`${value === undefined || Number.isNaN(value) ? '- ' : value}${metric}`}</Text>
         </View>
     );
 };
