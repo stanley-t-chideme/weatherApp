@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { } from 'react';
-import { Image } from 'react-native';
+import { Image, TouchableHighlight } from 'react-native';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
@@ -16,6 +16,7 @@ import { DEGREE, SCREEN_HEIGHT } from '../utilis/constants';
 import { ETemperatureMetrics } from '../types/enums/temperature';
 import { Footer } from '../components/Footer';
 import { Toggle } from '../components/Toggle';
+import SearchModal from '../components/SearchModal';
 
 
 
@@ -47,6 +48,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3b3b39',
   },
+  headerContainer: {
+    position: 'absolute',
+    top: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    right: 10,
+    left: 10,
+  },
   text: {},
 });
 
@@ -55,6 +65,7 @@ const styles = StyleSheet.create({
 function HomeScreen(): React.JSX.Element {
   const [weatherInfo, setWeatherInfo] = React.useState<IWeather | null>();
   const [metric, setMetric] = React.useState<ETemperatureMetrics>(ETemperatureMetrics.CELCIUS);
+  const [showSearch, setShowSearch] = React.useState<boolean>(false);
 
   const generateTemperatureString = () => {
     return metric === ETemperatureMetrics.CELCIUS ? `${KelvinToCelsius(weatherInfo?.main.temp!)}${DEGREE}C` : `${KelvinToFahrenheit(weatherInfo?.main.temp!)}${DEGREE}F`;
@@ -69,21 +80,28 @@ function HomeScreen(): React.JSX.Element {
   return <SafeAreaView >
     <View style={styles.container}>
       {/* <Header />*/}
-      <View style={{ position: 'absolute', right: 10, top: 10 }}>
-        <Toggle value={metric} options={{
-          left: {
-            value: ETemperatureMetrics.CELCIUS,
-            label: 'C',
-          },
-          right: {
-            value: ETemperatureMetrics.FARENHEIGHTS,
-            label: 'F',
-          },
-        }}
-          onChange={(val: ETemperatureMetrics) => {
-            setMetric(val);
+      <View style={styles.headerContainer}>
+        <View style={{}}>
+          <TouchableHighlight onPress={() => setShowSearch(true)} style={{ backgroundColor: 'black', borderRadius: 20, padding: 2, elevation: 10, borderWidth: 1 }}>
+            <IOIcon name="location" size={30} color={'white'} />
+          </TouchableHighlight>
+        </View>
+        <View style={{}}>
+          <Toggle value={metric} options={{
+            left: {
+              value: ETemperatureMetrics.CELCIUS,
+              label: `${DEGREE}C`,
+            },
+            right: {
+              value: ETemperatureMetrics.FARENHEIGHTS,
+              label: `${DEGREE}F`,
+            },
           }}
-        />
+            onChange={(val: ETemperatureMetrics) => {
+              setMetric(val);
+            }}
+          />
+        </View>
       </View>
       <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
         <Text variant="headlineSmall" style={{ marginVertical: 20, fontWeight: '600', letterSpacing: 2 }}>{`${new Date().toDateString()}`}</Text>
@@ -130,7 +148,7 @@ function HomeScreen(): React.JSX.Element {
     </View>
 
     <Footer />
-
+    <SearchModal visible={showSearch} onClose={() => { setShowSearch(false); }} />
   </SafeAreaView>;
 }
 
